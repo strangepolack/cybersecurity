@@ -18,6 +18,9 @@ def vt_url_analyzer(driver, url_to_check):
     Returns:
         results - dictionary 
     '''
+    def wait_for_elem(driver, time, elem):
+        return WebDriverWait(driver, time).until(EC.visibility_of_element_located((By.CSS_SELECTOR, elem)))
+    
     positives = "Unrated"
     total = "Unrated"
     results = {
@@ -39,30 +42,30 @@ def vt_url_analyzer(driver, url_to_check):
     for elem in temp_rating_keys:
         for a_key in elem:
             rating_keys.append(a_key)
+
     driver.get(provider_url)
-    home_view = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'home-view')))
+    home_view = wait_for_elem(driver=driver, time=10, elem='home-view')
     shadow_root0 = driver.execute_script('return arguments[0].shadowRoot', home_view)
-    url_search_in = shadow_root0.find_element(By.CSS_SELECTOR, 'input[id="urlSearchInput"]')
+    url_search_in = wait_for_elem(driver=shadow_root0, time=10, elem='input[id="urlSearchInput"]')
     url_search_in.send_keys(url_to_check)
     url_search_in.send_keys(Keys.ENTER)
 
     try:
-        shadow_host0  = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'url-view')))
-        shadow_root0  = driver.execute_script('return arguments[0].shadowRoot', shadow_host0)
-        shadow_host1  = shadow_root0.find_element(By.CSS_SELECTOR, 'vt-ui-detections-list[type="url"]')
-        shadow_root1  = driver.execute_script('return arguments[0].shadowRoot', shadow_host1)
-        shadow_host2  = shadow_root1.find_element(By.CSS_SELECTOR, 'div[id="detections"]')
-        hstacks       = shadow_host2.find_elements(By.CSS_SELECTOR,'div[class="detection hstack"]')
-        shadow_root10 = driver.execute_script('return arguments[0].shadowRoot', shadow_host0)
-        shadow_host10 = shadow_root10.find_element(By.CSS_SELECTOR, 'vt-ui-main-generic-report[id="report"]')
-        shadow_root11 = driver.execute_script('return arguments[0].shadowRoot', shadow_host10)
-        shadow_host11 = shadow_root11.find_element(By.CSS_SELECTOR, "vt-ui-detections-widget")
-        shadow_root12 = driver.execute_script('return arguments[0].shadowRoot', shadow_host11)
-        positives     = shadow_root12.find_element(By.CSS_SELECTOR, 'div[class="positives"]').text
-        total         = shadow_root12.find_element(By.CSS_SELECTOR, 'div[class="total"]').text
-        
+        shadow_host12 = wait_for_elem(driver=driver, time=10, elem='url-new-view')
+        shadow_root11 = driver.execute_script('return arguments[0].shadowRoot', shadow_host12)
+        shadow_host10 = wait_for_elem(driver=shadow_root11, time=10, elem='url-detection')
+        shadow_root09 = driver.execute_script('return arguments[0].shadowRoot', shadow_host10)
+        shadow_host08 = wait_for_elem(driver=shadow_root09, time=10, elem='vt-ui-detections-list[type="url"]')
+        shadow_root07 = driver.execute_script('return arguments[0].shadowRoot', shadow_host08)
+        shadow_host06 =  wait_for_elem(driver=shadow_root07, time=10, elem='div[id="detections"]')
+        hstacks = shadow_host06.find_elements(By.CSS_SELECTOR,'div[class="detection hstack"]')
+        shadow_root03 = driver.execute_script('return arguments[0].shadowRoot', shadow_host12)
+        shadow_host02 = wait_for_elem(driver=shadow_root03, time=10, elem="vt-ui-detections-widget")
+        shadow_root01 = driver.execute_script('return arguments[0].shadowRoot', shadow_host02)
+        positives     = shadow_root01.find_element(By.CSS_SELECTOR, 'div[class="positives"]').text
+        total = (wait_for_elem(driver=shadow_root01, time=10, elem='div[class="total"]')).text
         for _, hstack in enumerate(hstacks):
-            engine_name = hstack.find_element(By.CSS_SELECTOR, 'span[class="engine-name"]').text
+            engine_name  = hstack.find_element(By.CSS_SELECTOR, 'span[class="engine-name"]').text
             indiv_detect = hstack.find_element(By.CSS_SELECTOR, 'span[class="individual-detection"]').text
             if indiv_detect in rating_keys:
                 for element in rating_list:
@@ -81,13 +84,13 @@ def vt_url_analyzer(driver, url_to_check):
         print("VT rating cannot be performed.")
         print("Error:")
         print(error)
-
     return results
+
 
 if __name__ == "__main__":
     print("Library for checking url reputation with vt.")
     ### To perform an example checkout,
-    ### uncomment the lines below and fill in the value of "url_to_check"
+    ### uncomment the lines below and fill in the value of "url_to_check".
     # url_to_check = "your_suspicious_url"
     # options = webdriver.ChromeOptions()
     # options.detach = True
