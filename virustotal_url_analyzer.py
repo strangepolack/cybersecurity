@@ -106,11 +106,9 @@ if __name__ == "__main__":
     print("Library for checking url reputation with vt.")
     ### To perform an example checkout,
     ### uncomment the lines below and fill in the value of "url_to_check".
-    url_to_check = "your_suspicious_url"
-    url_to_check = "fedapush.com"
-    url_to_check = "acamized.ca"
-    options = webdriver.ChromeOptions()
-    options.detach = True
-    driver = webdriver.Chrome(options=options)
-    results = vt_url_analyzer(driver=driver, url_to_check=url_to_check)
-    print(results)
+    # url_to_check = "your_suspicious_url"
+    # options = webdriver.ChromeOptions()
+    # options.detach = True
+    # driver = webdriver.Chrome(options=options)
+    # results = vt_url_analyzer(driver=driver, url_to_check=url_to_check)
+    # print(results)
